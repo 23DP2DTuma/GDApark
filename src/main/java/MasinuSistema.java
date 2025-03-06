@@ -9,6 +9,24 @@ import java.util.InputMismatchException;
 import java.util.List;
 import java.util.Scanner;
 
+class Masina {
+    String marka, modelis, krasa;
+    int gads;
+    double cena;
+
+    public Masina(String marka, String modelis, String krasa, int gads, double cena) {
+        this.marka = marka;
+        this.modelis = modelis;
+        this.krasa = krasa;
+        this.gads = gads;
+        this.cena = cena;
+    }
+
+    @Override
+    public String toString() {
+        return String.format("%-10s %-10s %-10s %-6d %-8.2f", marka, modelis, krasa, gads, cena);
+    }
+}
 
 public class MasinuSistema {
     static List<Masina> masinas = new ArrayList<>();
@@ -26,7 +44,6 @@ public class MasinuSistema {
             System.out.println("5. Saglabāt un iziet");
             
             int choice = ievaditSkaitli("Izvēlies darbību: ");
-            scanner.nextLine(); // Attīram buferi pēc skaitliskas ievades
             switch (choice) {
                 case 1 -> pievienotMasinu();
                 case 2 -> paraditMasinas();
@@ -105,6 +122,116 @@ public class MasinuSistema {
         System.out.println("----------------------------------------------------------------");
         for (Masina m : masinas) {
             System.out.println(m);
+        }
+    }
+
+    static void kartotMasinas() {
+        if (masinas.isEmpty()) {
+            System.out.println("Nav pievienota neviena mašīna!");
+            return;
+        }
+        
+        System.out.println("\nIzvēlies kārtošanas veidu:");
+        System.out.println("1. Pēc cenas (augošā secībā)");
+        System.out.println("2. Pēc cenas (dilstošā secībā)");
+        System.out.println("3. Pēc gada (augošā secībā)");
+        System.out.println("4. Pēc gada (dilstošā secībā)");
+        System.out.println("5. Pēc markas (alfabētiski)");
+        System.out.println("6. Pēc modeļa (alfabētiski)");
+        
+        int choice = ievaditSkaitli("Izvēlies kārtošanas veidu: ");
+
+        switch (choice) {
+            case 1 -> masinas.sort(Comparator.comparingDouble(m -> m.cena));
+            case 2 -> masinas.sort(Comparator.comparingDouble((Masina m) -> m.cena).reversed());
+            case 3 -> masinas.sort(Comparator.comparingInt(m -> m.gads));
+            case 4 -> masinas.sort(Comparator.comparingInt((Masina m) -> m.gads).reversed());
+            case 5 -> masinas.sort(Comparator.comparing(m -> m.marka));
+            case 6 -> masinas.sort(Comparator.comparing(m -> m.modelis));
+            default -> System.out.println("Nepareiza izvēle!");
+        }
+        
+        System.out.println("Mašīnas sakārtotas!");
+        paraditMasinas();
+    }
+
+    static void filtretMasinas() {
+        if (masinas.isEmpty()) {
+            System.out.println("Nav pievienota neviena mašīna!");
+            return;
+        }
+        
+        System.out.println("\nIzvēlies filtru:");
+        System.out.println("1. Pēc cenas diapazona");
+        System.out.println("2. Pēc markas");
+        System.out.println("3. Pēc krāsas");
+        System.out.println("4. Pēc gada diapazona");
+        
+        int choice = ievaditSkaitli("Izvēlies filtru: ");
+
+        System.out.println("\n%-10s %-10s %-10s %-6s %-8s".formatted("Marka", "Modelis", "Krāsa", "Gads", "Cena"));
+        System.out.println("----------------------------------------------------------------");
+
+        switch (choice) {
+            case 1 -> {
+                double minCena = ievaditDouble("Ievadi minimālo cenu: ");
+                double maxCena = ievaditDouble("Ievadi maksimālo cenu: ");
+                
+                boolean atrastaMasina = false;
+                for (Masina m : masinas) {
+                    if (m.cena >= minCena && m.cena <= maxCena) {
+                        System.out.println(m);
+                        atrastaMasina = true;
+                    }
+                }
+                if (!atrastaMasina) {
+                    System.out.println("Nav atrasta neviena mašīna šajā cenu diapazonā!");
+                }
+            }
+            case 2 -> {
+                String marka = ievaditTekstu("Ievadi marku: ");
+                
+                boolean atrastaMasina = false;
+                for (Masina m : masinas) {
+                    if (m.marka.equalsIgnoreCase(marka)) {
+                        System.out.println(m);
+                        atrastaMasina = true;
+                    }
+                }
+                if (!atrastaMasina) {
+                    System.out.println("Nav atrasta neviena mašīna ar šo marku!");
+                }
+            }
+            case 3 -> {
+                String krasa = ievaditTekstu("Ievadi krāsu: ");
+                
+                boolean atrastaMasina = false;
+                for (Masina m : masinas) {
+                    if (m.krasa.equalsIgnoreCase(krasa)) {
+                        System.out.println(m);
+                        atrastaMasina = true;
+                    }
+                }
+                if (!atrastaMasina) {
+                    System.out.println("Nav atrasta neviena mašīna ar šo krāsu!");
+                }
+            }
+            case 4 -> {
+                int minGads = ievaditSkaitli("Ievadi minimālo gadu: ");
+                int maxGads = ievaditSkaitli("Ievadi maksimālo gadu: ");
+                
+                boolean atrastaMasina = false;
+                for (Masina m : masinas) {
+                    if (m.gads >= minGads && m.gads <= maxGads) {
+                        System.out.println(m);
+                        atrastaMasina = true;
+                    }
+                }
+                if (!atrastaMasina) {
+                    System.out.println("Nav atrasta neviena mašīna šajā gadu diapazonā!");
+                }
+            }
+            default -> System.out.println("Nepareiza izvēle!");
         }
     }
 
