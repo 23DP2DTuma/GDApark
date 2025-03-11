@@ -87,16 +87,37 @@ public class MasinuSistema {
         while (true) {
             System.out.print(uzaicinajums);
             String ievade = scanner.nextLine().trim();
-            if (!ievade.matches(".*\\d.*")) {
+            if (ievade.isEmpty()) {
+                System.out.println("Ievade nevar būt tukša! Mēģini vēlreiz.");
+                continue;
+            }
+            if (!ievade.matches("[a-zA-ZāčēģīķļņūšžĀČĒĢĪĶĻŅŪŠŽ]+")) {
+                System.out.println("Ievadei jābūt tikai no burtiem, bez cipariem un simboliem. Mēģini vēlreiz.");
+                continue;
+            }
+            return ievade;
+        }
+    }
+
+    static String ievaditTekstu1(String uzaicinajums) {
+        while (true) {
+            System.out.print(uzaicinajums);
+            String ievade = scanner.nextLine().trim();
+            if (ievade.isEmpty()) {
+                System.out.println("Ievade nevar būt tukša! Mēģini vēlreiz.");
+                continue;
+            }
+            // Modified to allow alphanumeric input including symbols like +, -, _
+            if (ievade.matches("[a-zA-Z0-9āčēģīķļņūšžĀČĒĢĪĶĻŅŪŠŽ\\+\\-\\_\\s\\ ]+")) {
                 return ievade;
             }
-            System.out.println("Ievadei jābūt tikai no burtiem, mēģini vēlreiz.");
+            System.out.println("Ievadei jābūt burtiem, cipariem vai simboliem +, -, _. Mēģini vēlreiz.");
         }
     }
 
     static void pievienotMasinu() {
         String marka = ievaditTekstu("Marka: ");
-        String modelis = ievaditTekstu("Modelis: ");
+        String modelis = ievaditTekstu1("Modelis: ");
         String krasa = ievaditTekstu("Krāsa: ");
 
         int gads;
@@ -239,16 +260,27 @@ public class MasinuSistema {
         try (BufferedReader br = new BufferedReader(new FileReader(CSV_FILE))) {
             String line;
             while ((line = br.readLine()) != null) {
-                String[] data = line.split(",");
-                int gads = Integer.parseInt(data[3]);
-                if (gads >= 1850 && gads <= 2025) {
-                    masinas.add(new Masina(data[0], data[1], data[2], gads, Double.parseDouble(data[4])));
+                try {
+                    String[] data = line.split(",");
+                    if (data.length != 5) {
+                        System.out.println("Kļūdains ieraksts failā: " + line);
+                        continue;
+                    }
+                    
+                    int gads = Integer.parseInt(data[3]);
+                    double cena = Double.parseDouble(data[4]);
+                    
+                    if (gads >= 1850 && gads <= 2025) {
+                        masinas.add(new Masina(data[0], data[1], data[2], gads, cena));
+                    } else {
+                        System.out.println("Nekorekts gads ierakstā: " + line);
+                    }
+                } catch (NumberFormatException | ArrayIndexOutOfBoundsException e) {
+                    System.out.println("Kļūda ieraksta apstrādē: " + line);
                 }
             }
         } catch (IOException e) {
             System.out.println("Nevarēja ielādēt failu, sākam ar tukšu sarakstu.");
-        } catch (NumberFormatException | ArrayIndexOutOfBoundsException e) {
-            System.out.println("Kļūda failā! Nepareizs datu formāts.");
         }
     }
 
