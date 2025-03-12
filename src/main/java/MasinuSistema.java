@@ -107,11 +107,11 @@ public class MasinuSistema {
                 System.out.println("Ievade nevar būt tukša! Mēģini vēlreiz.");
                 continue;
             }
-            // Modified to allow alphanumeric input including symbols like +, -, _
-            if (ievade.matches("[a-zA-Z0-9āčēģīķļņūšžĀČĒĢĪĶĻŅŪŠŽ\\+\\-\\_\\s\\ ]+")) {
+            // Modified to allow only letters and numbers
+            if (ievade.matches("[a-zA-Z0-9āčēģīķļņūšžĀČĒĢĪĶĻŅŪŠŽ\\s]+")) {
                 return ievade;
             }
-            System.out.println("Ievadei jābūt burtiem, cipariem vai simboliem +, -, _. Mēģini vēlreiz.");
+            System.out.println("Ievadei jābūt tikai burtiem un cipariem. Mēģini vēlreiz.");
         }
     }
 
