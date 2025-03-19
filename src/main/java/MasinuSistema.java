@@ -9,25 +9,6 @@ import java.util.InputMismatchException;
 import java.util.List;
 import java.util.Scanner;
 
-class Masina {
-    String marka, modelis, krasa;
-    int gads;
-    double cena;
-
-    public Masina(String marka, String modelis, String krasa, int gads, double cena) {
-        this.marka = marka;
-        this.modelis = modelis;
-        this.krasa = krasa;
-        this.gads = gads;
-        this.cena = cena;
-    }
-
-    @Override
-    public String toString() {
-        return String.format("%-10s %-10s %-10s %-6d %-8.2f", marka, modelis, krasa, gads, cena);
-    }
-}
-
 public class MasinuSistema {
     static List<Masina> masinas = new ArrayList<>();
     static final String CSV_FILE = "masinas.csv";
@@ -35,23 +16,58 @@ public class MasinuSistema {
 
     public static void main(String[] args) {
         ieladetDatus();
-        
         while (true) {
             System.out.println("\n1. Pievienot mašīnu");
             System.out.println("2. Parādīt visas mašīnas");
             System.out.println("3. Kārtot mašīnas");
             System.out.println("4. Filtrēt mašīnas");
-            System.out.println("5. Saglabāt un iziet");
-            
+            System.out.println("5. Rediģēt mašīnu");
+            System.out.println("6. Dzēst mašīnu");
+            System.out.println("7. Saglabāt un iziet");
+
             int choice = ievaditSkaitli("Izvēlies darbību: ");
             switch (choice) {
                 case 1 -> pievienotMasinu();
                 case 2 -> paraditMasinas();
                 case 3 -> kartotMasinas();
                 case 4 -> filtretMasinas();
-                case 5 -> { saglabatDatus(); return; }
+                case 5 -> redigetMasinu();
+                case 6 -> dzestMasinu();
+                case 7 -> { saglabatDatus(); return; }
                 default -> System.out.println("Nepareiza izvēle!");
             }
+        }
+    }
+    static void redigetMasinu() {
+        if (masinas.isEmpty()) {
+            System.out.println("Nav pievienota neviena mašīna!");
+            return;
+        }
+        int id = ievaditSkaitli("Ievadi mašīnas ID, ko vēlies rediģēt: ");
+        for (Masina m : masinas) {
+            if (m.id == id) {
+                System.out.println("Esošā informācija: " + m);
+                m.marka = ievaditTekstu("Jaunā marka: ");
+                m.modelis = ievaditTekstu("Jaunais modelis: ");
+                m.krasa = ievaditTekstu("Jaunā krāsa: ");
+                m.gads = ievaditSkaitli("Jaunais gads: ");
+                m.cena = ievaditDouble("Jaunā cena: ");
+                System.out.println("Mašīna atjaunināta!");
+                return;
+            }
+        }
+        System.out.println("Mašīna ar šo ID netika atrasta.");
+    }
+    static void dzestMasinu() {
+        if (masinas.isEmpty()) {
+            System.out.println("Nav pievienota neviena mašīna!");
+            return;
+        }
+        int id = ievaditSkaitli("Ievadi mašīnas ID, ko vēlies dzēst: ");
+        if (masinas.removeIf(m -> m.id == id)) {
+            System.out.println("Mašīna dzēsta!");
+        } else {
+            System.out.println("Mašīna ar šo ID netika atrasta.");
         }
     }
 
@@ -134,17 +150,17 @@ public class MasinuSistema {
     }
 
     static void paraditMasinas() {
-        if (masinas.isEmpty()) {
-            System.out.println("Nav pievienota neviena mašīna!");
-            return;
-        }
-        
-        System.out.println("\n%-10s %-10s %-10s %-6s %-8s".formatted("Marka", "Modelis", "Krāsa", "Gads", "Cena"));
-        System.out.println("----------------------------------------------------------------");
-        for (Masina m : masinas) {
-            System.out.println(m);
-        }
+    if (masinas.isEmpty()) {
+        System.out.println("Nav pievienota neviena mašīna!");
+        return;
     }
+    
+    System.out.println("\n%-5s %-10s %-10s %-10s %-6s %-8s".formatted("ID", "Marka", "Modelis", "Krāsa", "Gads", "Cena"));
+    System.out.println("----------------------------------------------------------------");
+    for (Masina m : masinas) {
+        System.out.println(m);
+    }
+}
 
     static void kartotMasinas() {
         if (masinas.isEmpty()) {
