@@ -229,11 +229,11 @@ public class MasinuSistema {
         // Sakārtojam mašīnas pēc ID augošā secībā, pirms parādīšanas
         masinas.sort(Comparator.comparingInt(m -> m.id));
         
-        System.out.println("\n%-5s %-10s %-10s %-10s %-6s %-8s".formatted("ID", "Marka", "Modelis", "Krāsa", "Gads", "Cena"));
-        System.out.println("----------------------------------------------------------------");
+        System.out.println(Masina.printTableHeader());
         for (Masina m : masinas) {
             System.out.println(m);
         }
+        System.out.println(Masina.printTableFooter());
     }
 
     static void kartotMasinas() {
@@ -271,12 +271,11 @@ public class MasinuSistema {
         
         System.out.println("Mašīnas sakārtotas!");
         
-        // Parādam sakārtotās mašīnas (bet neizmantojam paraditMasinas() metodi, jo tā automātiski kārto pēc ID)
-        System.out.println("\n%-5s %-10s %-10s %-10s %-6s %-8s".formatted("ID", "Marka", "Modelis", "Krāsa", "Gads", "Cena"));
-        System.out.println("----------------------------------------------------------------");
+        System.out.println(Masina.printTableHeader());
         for (Masina m : masinas) {
             System.out.println(m);
         }
+        System.out.println(Masina.printTableFooter());
     }
 
     static void filtretMasinas() {
@@ -294,9 +293,6 @@ public class MasinuSistema {
         
         int choice = ievaditSkaitli("Izvēlies filtru: ");
 
-        System.out.println("\n%-5s %-10s %-10s %-10s %-6s %-8s".formatted("ID", "Marka", "Modelis", "Krāsa", "Gads", "Cena"));
-        System.out.println("----------------------------------------------------------------");
-
         switch (choice) {
             case 1 -> {
                 double minCena = ievaditDouble("Ievadi minimālo cenu: ");
@@ -308,12 +304,15 @@ public class MasinuSistema {
                 }
                 
                 boolean atrastaMasina = false;
+                System.out.println(Masina.printTableHeader());
                 for (Masina m : masinas) {
                     if (m.cena >= minCena && m.cena <= maxCena) {
                         System.out.println(m);
                         atrastaMasina = true;
                     }
                 }
+                System.out.println(Masina.printTableFooter());
+                
                 if (!atrastaMasina) {
                     System.out.println("Nav atrasta neviena mašīna šajā cenu diapazonā!");
                 }
@@ -322,12 +321,15 @@ public class MasinuSistema {
                 String marka = ievaditTekstu("Ievadi marku: ");
                 
                 boolean atrastaMasina = false;
+                System.out.println(Masina.printTableHeader());
                 for (Masina m : masinas) {
                     if (m.marka.equalsIgnoreCase(marka)) {
                         System.out.println(m);
                         atrastaMasina = true;
                     }
                 }
+                System.out.println(Masina.printTableFooter());
+                
                 if (!atrastaMasina) {
                     System.out.println("Nav atrasta neviena mašīna ar šo marku!");
                 }
@@ -336,12 +338,15 @@ public class MasinuSistema {
                 String krasa = ievaditTekstu("Ievadi krāsu: ");
                 
                 boolean atrastaMasina = false;
+                System.out.println(Masina.printTableHeader());
                 for (Masina m : masinas) {
                     if (m.krasa.equalsIgnoreCase(krasa)) {
                         System.out.println(m);
                         atrastaMasina = true;
                     }
                 }
+                System.out.println(Masina.printTableFooter());
+                
                 if (!atrastaMasina) {
                     System.out.println("Nav atrasta neviena mašīna ar šo krāsu!");
                 }
@@ -356,12 +361,15 @@ public class MasinuSistema {
                 }
                 
                 boolean atrastaMasina = false;
+                System.out.println(Masina.printTableHeader());
                 for (Masina m : masinas) {
                     if (m.gads >= minGads && m.gads <= maxGads) {
                         System.out.println(m);
                         atrastaMasina = true;
                     }
                 }
+                System.out.println(Masina.printTableFooter());
+                
                 if (!atrastaMasina) {
                     System.out.println("Nav atrasta neviena mašīna šajā gadu diapazonā!");
                 }
@@ -376,12 +384,15 @@ public class MasinuSistema {
                 }
                 
                 boolean atrastaMasina = false;
+                System.out.println(Masina.printTableHeader());
                 for (Masina m : masinas) {
                     if (m.id >= minId && m.id <= maxId) {
                         System.out.println(m);
                         atrastaMasina = true;
                     }
                 }
+                System.out.println(Masina.printTableFooter());
+                
                 if (!atrastaMasina) {
                     System.out.println("Nav atrasta neviena mašīna šajā ID diapazonā!");
                 }
