@@ -1,5 +1,3 @@
-
-
 class Masina {
     static int idCounter = 1;
     int id;
@@ -29,7 +27,25 @@ class Masina {
     }
 
     @Override
-    public String toString() {
-        return String.format("%-5d %-10s %-10s %-10s %-6d %-8.2f", id, marka, modelis, krasa, gads, cena);
-    }
+public String toString() {
+    // Truncate strings to a maximum length
+    String truncatedMarka = truncateString(marka, 10);
+    String truncatedModelis = truncateString(modelis, 10);
+    String truncatedKrasa = truncateString(krasa, 10);
+
+    return String.format("%-5d %-10s %-10s %-10s %-6d %-8.2f", 
+        id, 
+        truncatedMarka, 
+        truncatedModelis, 
+        truncatedKrasa, 
+        gads, 
+        cena);
+}
+
+// Helper method to truncate strings
+private String truncateString(String input, int maxLength) {
+    if (input == null) return "";
+    if (input.length() <= maxLength) return input;
+    return input.substring(0, maxLength - 3) + "...";
+}
 }
