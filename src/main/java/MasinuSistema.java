@@ -10,21 +10,27 @@ import java.util.List;
 import java.util.Scanner;
 
 public class MasinuSistema {
+    // ANSI krāsu kodi
+    static final String RESET = "\u001B[0m";
+    static final String BOLD = "\u001B[1m";
+    static final String RED = "\u001B[31m";
+    static final String GREEN = "\u001B[32m";
+    static final String YELLOW = "\u001B[33m";
+    static final String BLUE = "\u001B[34m";
+    static final String PURPLE = "\u001B[35m";
+    static final String CYAN = "\u001B[36m";
+    static final String WHITE_BG = "\u001B[47m";
+    static final String BLACK_TEXT = "\u001B[30m";
+    
     static List<Masina> masinas = new ArrayList<>();
     static final String CSV_FILE = "masinas.csv";
     static Scanner scanner = new Scanner(System.in);
 
     public static void main(String[] args) {
         ieladetDatus();
+        izvaditVirsrakstu();
         while (true) {
-            System.out.println("\n1. Pievienot mašīnu");
-            System.out.println("2. Parādīt visas mašīnas");
-            System.out.println("3. Kārtot mašīnas");
-            System.out.println("4. Filtrēt mašīnas");
-            System.out.println("5. Rediģēt mašīnu");
-            System.out.println("6. Dzēst mašīnu");
-            System.out.println("7. Saglabāt un iziet");
-
+            izvaditIzveletni();
             int choice = ievaditSkaitli("Izvēlies darbību: ");
             switch (choice) {
                 case 1 -> pievienotMasinu();
@@ -33,31 +39,52 @@ public class MasinuSistema {
                 case 4 -> filtretMasinas();
                 case 5 -> redigetMasinu();
                 case 6 -> dzestMasinu();
-                case 7 -> { saglabatDatus(); return; }
-                default -> System.out.println("Nepareiza izvēle!");
+                case 7 -> { 
+                    saglabatDatus(); 
+                    System.out.println(GREEN + "Paldies par darbu ar Mašīnu sistēmu! Uz redzēšanos!" + RESET);
+                    return; 
+                }
+                default -> System.out.println(RED + "Nepareiza izvēle!" + RESET);
             }
         }
     }
     
+    static void izvaditVirsrakstu() {
+        System.out.println(WHITE_BG + BLACK_TEXT + BOLD + "                                              " + RESET);
+        System.out.println(WHITE_BG + BLACK_TEXT + BOLD + "          AUTOMAŠĪNU VADĪBAS SISTĒMA          " + RESET);
+        System.out.println(WHITE_BG + BLACK_TEXT + BOLD + "                                              " + RESET);
+    }
+    
+    static void izvaditIzveletni() {
+        System.out.println("\n" + BOLD + "PIEEJAMĀS DARBĪBAS:" + RESET);
+        System.out.println(CYAN + "1. " + RESET + "Pievienot mašīnu");
+        System.out.println(CYAN + "2. " + RESET + "Parādīt visas mašīnas");
+        System.out.println(CYAN + "3. " + RESET + "Kārtot mašīnas");
+        System.out.println(CYAN + "4. " + RESET + "Filtrēt mašīnas");
+        System.out.println(CYAN + "5. " + RESET + "Rediģēt mašīnu");
+        System.out.println(CYAN + "6. " + RESET + "Dzēst mašīnu");
+        System.out.println(CYAN + "7. " + RESET + "Saglabāt un iziet");
+    }
+    
     static void redigetMasinu() {
         if (masinas.isEmpty()) {
-            System.out.println("Nav pievienota neviena mašīna!");
+            System.out.println(YELLOW + "Nav pievienota neviena mašīna!" + RESET);
             return;
         }
         paraditMasinas();
         int id = ievaditSkaitli("Ievadi mašīnas ID, ko vēlies rediģēt: ");
         for (Masina m : masinas) {
             if (m.id == id) {
-                System.out.println("Esošā informācija: " + m);
-                m.marka = ievaditTekstu("Jaunā marka (vai Enter, lai saglabātu esošo '" + m.marka + "'): ", m.marka);
-                m.modelis = ievaditTekstu1("Jaunais modelis (vai Enter, lai saglabātu esošo '" + m.modelis + "'): ", m.modelis);
-                m.krasa = ievaditTekstu("Jaunā krāsa (vai Enter, lai saglabātu esošo '" + m.krasa + "'): ", m.krasa);
+                System.out.println(BLUE + "Esošā informācija: " + RESET + m);
+                m.marka = ievaditTekstu("Jaunā marka (vai Enter, lai saglabātu esošo '" + GREEN + m.marka + RESET + "'): ", m.marka);
+                m.modelis = ievaditTekstu1("Jaunais modelis (vai Enter, lai saglabātu esošo '" + GREEN + m.modelis + RESET + "'): ", m.modelis);
+                m.krasa = ievaditTekstu("Jaunā krāsa (vai Enter, lai saglabātu esošo '" + GREEN + m.krasa + RESET + "'): ", m.krasa);
                 
-                int jaunaisGads = ievaditSkaitli("Jaunais gads (vai 0, lai saglabātu esošo " + m.gads + "): ");
+                int jaunaisGads = ievaditSkaitli("Jaunais gads (vai 0, lai saglabātu esošo " + GREEN + m.gads + RESET + "): ");
                 if (jaunaisGads != 0) {
                     while (jaunaisGads < 1850 || jaunaisGads > 2025) {
-                        System.out.println("Gadam jābūt diapazonā no 1850 līdz 2025. Mēģini vēlreiz.");
-                        jaunaisGads = ievaditSkaitli("Jaunais gads (vai 0, lai saglabātu esošo " + m.gads + "): ");
+                        System.out.println(RED + "Gadam jābūt diapazonā no 1850 līdz 2025. Mēģini vēlreiz." + RESET);
+                        jaunaisGads = ievaditSkaitli("Jaunais gads (vai 0, lai saglabātu esošo " + GREEN + m.gads + RESET + "): ");
                         if (jaunaisGads == 0) break;
                     }
                     if (jaunaisGads != 0) {
@@ -65,11 +92,11 @@ public class MasinuSistema {
                     }
                 }
                 
-                double jaunaCena = ievaditDouble("Jaunā cena (vai 0, lai saglabātu esošo " + m.cena + "): ");
+                double jaunaCena = ievaditDouble("Jaunā cena (vai 0, lai saglabātu esošo " + GREEN + m.cena + RESET + "): ");
                 if (jaunaCena != 0) {
                     while (jaunaCena < 0) {
-                        System.out.println("Cenai jābūt pozitīvai. Mēģini vēlreiz.");
-                        jaunaCena = ievaditDouble("Jaunā cena (vai 0, lai saglabātu esošo " + m.cena + "): ");
+                        System.out.println(RED + "Cenai jābūt pozitīvai. Mēģini vēlreiz." + RESET);
+                        jaunaCena = ievaditDouble("Jaunā cena (vai 0, lai saglabātu esošo " + GREEN + m.cena + RESET + "): ");
                         if (jaunaCena == 0) break;
                     }
                     if (jaunaCena != 0) {
@@ -77,16 +104,16 @@ public class MasinuSistema {
                     }
                 }
                 
-                System.out.println("Mašīna atjaunināta!");
+                System.out.println(GREEN + BOLD + "Mašīna atjaunināta!" + RESET);
                 return;
             }
         }
-        System.out.println("Mašīna ar šo ID netika atrasta.");
+        System.out.println(RED + "Mašīna ar šo ID netika atrasta." + RESET);
     }
     
     static void dzestMasinu() {
         if (masinas.isEmpty()) {
-            System.out.println("Nav pievienota neviena mašīna!");
+            System.out.println(YELLOW + "Nav pievienota neviena mašīna!" + RESET);
             return;
         }
         paraditMasinas();
@@ -102,29 +129,29 @@ public class MasinuSistema {
         }
         
         if (dzestama == null) {
-            System.out.println("Mašīna ar šo ID netika atrasta.");
+            System.out.println(RED + "Mašīna ar šo ID netika atrasta." + RESET);
             return;
         }
         
-        System.out.println("Dzēšamā mašīna: " + dzestama);
-        if (!apstiprinatDarbibu("Vai tiešām vēlaties dzēst šo mašīnu? (j/n): ")) return;
+        System.out.println(YELLOW + "Dzēšamā mašīna: " + RESET + dzestama);
+        if (!apstiprinatDarbibu(RED + "Vai tiešām vēlaties dzēst šo mašīnu? (j/n): " + RESET)) return;
         
         if (masinas.removeIf(m -> m.id == id)) {
-            System.out.println("Mašīna dzēsta!");
+            System.out.println(GREEN + BOLD + "Mašīna dzēsta!" + RESET);
         } else {
-            System.out.println("Mašīna ar šo ID netika atrasta.");
+            System.out.println(RED + "Mašīna ar šo ID netika atrasta." + RESET);
         }
     }
 
     static int ievaditSkaitli(String uzaicinajums) {
         while (true) {
             try {
-                System.out.print(uzaicinajums);
+                System.out.print(PURPLE + uzaicinajums + RESET);
                 int skaitlis = scanner.nextInt();
                 scanner.nextLine(); // Attīram buferi pēc ievades
                 return skaitlis;
             } catch (InputMismatchException e) {
-                System.out.println("Nepareiza ievade! Lūdzu, ievadiet skaitli.");
+                System.out.println(RED + "Nepareiza ievade! Lūdzu, ievadiet skaitli." + RESET);
                 scanner.nextLine();
             }
         }
@@ -133,12 +160,12 @@ public class MasinuSistema {
     static double ievaditDouble(String uzaicinajums) {
         while (true) {
             try {
-                System.out.print(uzaicinajums);
+                System.out.print(PURPLE + uzaicinajums + RESET);
                 double skaitlis = scanner.nextDouble();
                 scanner.nextLine(); // Attīram buferi pēc ievades
                 return skaitlis;
             } catch (InputMismatchException e) {
-                System.out.println("Nepareiza ievade! Lūdzu, ievadiet skaitli.");
+                System.out.println(RED + "Nepareiza ievade! Lūdzu, ievadiet skaitli." + RESET);
                 scanner.nextLine();
             }
         }
@@ -150,17 +177,17 @@ public class MasinuSistema {
     
     static String ievaditTekstu(String uzaicinajums, String defaultVertiba) {
         while (true) {
-            System.out.print(uzaicinajums);
+            System.out.print(PURPLE + uzaicinajums + RESET);
             String ievade = scanner.nextLine().trim();
             if (ievade.isEmpty() && defaultVertiba != null) {
                 return defaultVertiba;
             }
             if (ievade.isEmpty()) {
-                System.out.println("Ievade nevar būt tukša! Mēģini vēlreiz.");
+                System.out.println(RED + "Ievade nevar būt tukša! Mēģini vēlreiz." + RESET);
                 continue;
             }
             if (!ievade.matches("[a-zA-ZāčēģīķļņūšžĀČĒĢĪĶĻŅŪŠŽ]+")) {
-                System.out.println("Ievadei jābūt tikai no burtiem, bez cipariem un simboliem. Mēģini vēlreiz.");
+                System.out.println(RED + "Ievadei jābūt tikai no burtiem, bez cipariem un simboliem. Mēģini vēlreiz." + RESET);
                 continue;
             }
             return ievade;
@@ -179,18 +206,18 @@ public class MasinuSistema {
     
     static String ievaditTekstu1(String uzaicinajums, String defaultVertiba) {
         while (true) {
-            System.out.print(uzaicinajums);
+            System.out.print(PURPLE + uzaicinajums + RESET);
             String ievade = scanner.nextLine().trim();
             if (ievade.isEmpty() && defaultVertiba != null) {
                 return defaultVertiba;
             }
             if (ievade.isEmpty()) {
-                System.out.println("Ievade nevar būt tukša! Mēģini vēlreiz.");
+                System.out.println(RED + "Ievade nevar būt tukša! Mēģini vēlreiz." + RESET);
                 continue;
             }
             // Checking if input contains ONLY letters, numbers and spaces
             if (!ievade.matches("[a-zA-Z0-9āčēģīķļņūšžĀČĒĢĪĶĻŅŪŠŽ\\s]+")) {
-                System.out.println("Ievadei jābūt tikai burtiem un cipariem. Mēģini vēlreiz.");
+                System.out.println(RED + "Ievadei jābūt tikai burtiem un cipariem. Mēģini vēlreiz." + RESET);
                 continue;
             }
             return ievade;
@@ -198,6 +225,7 @@ public class MasinuSistema {
     }
 
     static void pievienotMasinu() {
+        System.out.println(BOLD + "\nJAUNAS MAŠĪNAS PIEVIENOŠANA" + RESET);
         String marka = ievaditTekstu("Marka: ");
         String modelis = ievaditTekstu1("Modelis: ");
         String krasa = ievaditTekstu("Krāsa: ");
@@ -206,51 +234,52 @@ public class MasinuSistema {
         while (true) {
             gads = ievaditSkaitli("Gads: ");
             if (gads >= 1850 && gads <= 2025) break;
-            System.out.println("Gadam jābūt diapazonā no 1850 līdz 2025. Mēģini vēlreiz.");
+            System.out.println(RED + "Gadam jābūt diapazonā no 1850 līdz 2025. Mēģini vēlreiz." + RESET);
         }
 
         double cena;
         while (true) {
             cena = ievaditDouble("Cena: ");
             if (cena > 0) break;
-            System.out.println("Cenai jābūt pozitīvai. Mēģini vēlreiz.");
+            System.out.println(RED + "Cenai jābūt pozitīvai. Mēģini vēlreiz." + RESET);
         }
 
         masinas.add(new Masina(marka, modelis, krasa, gads, cena));
-        System.out.println("Mašīna pievienota!");
+        System.out.println(GREEN + BOLD + "Mašīna pievienota!" + RESET);
     }
 
     static void paraditMasinas() {
         if (masinas.isEmpty()) {
-            System.out.println("Nav pievienota neviena mašīna!");
+            System.out.println(YELLOW + "Nav pievienota neviena mašīna!" + RESET);
             return;
         }
         
         // Sakārtojam mašīnas pēc ID augošā secībā, pirms parādīšanas
         masinas.sort(Comparator.comparingInt(m -> m.id));
         
-        System.out.println(Masina.printTableHeader());
+        System.out.println(BOLD + "\nMASINAS SARAKSTS:" + RESET);
+        System.out.println(CYAN + Masina.printTableHeader() + RESET);
         for (Masina m : masinas) {
             System.out.println(m);
         }
-        System.out.println(Masina.printTableFooter());
+        System.out.println(CYAN + Masina.printTableFooter() + RESET);
     }
 
     static void kartotMasinas() {
         if (masinas.isEmpty()) {
-            System.out.println("Nav pievienota neviena mašīna!");
+            System.out.println(YELLOW + "Nav pievienota neviena mašīna!" + RESET);
             return;
         }
         
-        System.out.println("\nIzvēlies kārtošanas veidu:");
-        System.out.println("1. Pēc ID (augošā secībā)");
-        System.out.println("2. Pēc ID (dilstošā secībā)");
-        System.out.println("3. Pēc cenas (augošā secībā)");
-        System.out.println("4. Pēc cenas (dilstošā secībā)");
-        System.out.println("5. Pēc gada (augošā secībā)");
-        System.out.println("6. Pēc gada (dilstošā secībā)");
-        System.out.println("7. Pēc markas (alfabētiski)");
-        System.out.println("8. Pēc modeļa (alfabētiski)");
+        System.out.println(BOLD + "\nKĀRTOŠANAS OPCIJAS:" + RESET);
+        System.out.println(CYAN + "1. " + RESET + "Pēc ID (augošā secībā)");
+        System.out.println(CYAN + "2. " + RESET + "Pēc ID (dilstošā secībā)");
+        System.out.println(CYAN + "3. " + RESET + "Pēc cenas (augošā secībā)");
+        System.out.println(CYAN + "4. " + RESET + "Pēc cenas (dilstošā secībā)");
+        System.out.println(CYAN + "5. " + RESET + "Pēc gada (augošā secībā)");
+        System.out.println(CYAN + "6. " + RESET + "Pēc gada (dilstošā secībā)");
+        System.out.println(CYAN + "7. " + RESET + "Pēc markas (alfabētiski)");
+        System.out.println(CYAN + "8. " + RESET + "Pēc modeļa (alfabētiski)");
         
         int choice = ievaditSkaitli("Izvēlies kārtošanas veidu: ");
 
@@ -264,32 +293,32 @@ public class MasinuSistema {
             case 7 -> masinas.sort(Comparator.comparing(m -> m.marka));
             case 8 -> masinas.sort(Comparator.comparing(m -> m.modelis));
             default -> {
-                System.out.println("Nepareiza izvēle!");
+                System.out.println(RED + "Nepareiza izvēle!" + RESET);
                 return;
             }
         }
         
-        System.out.println("Mašīnas sakārtotas!");
+        System.out.println(GREEN + BOLD + "Mašīnas sakārtotas!" + RESET);
         
-        System.out.println(Masina.printTableHeader());
+        System.out.println(CYAN + Masina.printTableHeader() + RESET);
         for (Masina m : masinas) {
             System.out.println(m);
         }
-        System.out.println(Masina.printTableFooter());
+        System.out.println(CYAN + Masina.printTableFooter() + RESET);
     }
 
     static void filtretMasinas() {
         if (masinas.isEmpty()) {
-            System.out.println("Nav pievienota neviena mašīna!");
+            System.out.println(YELLOW + "Nav pievienota neviena mašīna!" + RESET);
             return;
         }
         
-        System.out.println("\nIzvēlies filtru:");
-        System.out.println("1. Pēc cenas diapazona");
-        System.out.println("2. Pēc markas");
-        System.out.println("3. Pēc krāsas");
-        System.out.println("4. Pēc gada diapazona");
-        System.out.println("5. Pēc ID diapazona");
+        System.out.println(BOLD + "\nFILTRĒŠANAS OPCIJAS:" + RESET);
+        System.out.println(CYAN + "1. " + RESET + "Pēc cenas diapazona");
+        System.out.println(CYAN + "2. " + RESET + "Pēc markas");
+        System.out.println(CYAN + "3. " + RESET + "Pēc krāsas");
+        System.out.println(CYAN + "4. " + RESET + "Pēc gada diapazona");
+        System.out.println(CYAN + "5. " + RESET + "Pēc ID diapazona");
         
         int choice = ievaditSkaitli("Izvēlies filtru: ");
 
@@ -300,55 +329,55 @@ public class MasinuSistema {
                 while (true) {
                     maxCena = ievaditDouble("Ievadi maksimālo cenu: ");
                     if (maxCena >= minCena) break;
-                    System.out.println("Maksimālai cenai jābūt lielākai vai vienādai ar minimālo cenu. Mēģini vēlreiz.");
+                    System.out.println(RED + "Maksimālai cenai jābūt lielākai vai vienādai ar minimālo cenu. Mēģini vēlreiz." + RESET);
                 }
                 
                 boolean atrastaMasina = false;
-                System.out.println(Masina.printTableHeader());
+                System.out.println(CYAN + Masina.printTableHeader() + RESET);
                 for (Masina m : masinas) {
                     if (m.cena >= minCena && m.cena <= maxCena) {
                         System.out.println(m);
                         atrastaMasina = true;
                     }
                 }
-                System.out.println(Masina.printTableFooter());
+                System.out.println(CYAN + Masina.printTableFooter() + RESET);
                 
                 if (!atrastaMasina) {
-                    System.out.println("Nav atrasta neviena mašīna šajā cenu diapazonā!");
+                    System.out.println(YELLOW + "Nav atrasta neviena mašīna šajā cenu diapazonā!" + RESET);
                 }
             }
             case 2 -> {
                 String marka = ievaditTekstu("Ievadi marku: ");
                 
                 boolean atrastaMasina = false;
-                System.out.println(Masina.printTableHeader());
+                System.out.println(CYAN + Masina.printTableHeader() + RESET);
                 for (Masina m : masinas) {
                     if (m.marka.equalsIgnoreCase(marka)) {
                         System.out.println(m);
                         atrastaMasina = true;
                     }
                 }
-                System.out.println(Masina.printTableFooter());
+                System.out.println(CYAN + Masina.printTableFooter() + RESET);
                 
                 if (!atrastaMasina) {
-                    System.out.println("Nav atrasta neviena mašīna ar šo marku!");
+                    System.out.println(YELLOW + "Nav atrasta neviena mašīna ar šo marku!" + RESET);
                 }
             }
             case 3 -> {
                 String krasa = ievaditTekstu("Ievadi krāsu: ");
                 
                 boolean atrastaMasina = false;
-                System.out.println(Masina.printTableHeader());
+                System.out.println(CYAN + Masina.printTableHeader() + RESET);
                 for (Masina m : masinas) {
                     if (m.krasa.equalsIgnoreCase(krasa)) {
                         System.out.println(m);
                         atrastaMasina = true;
                     }
                 }
-                System.out.println(Masina.printTableFooter());
+                System.out.println(CYAN + Masina.printTableFooter() + RESET);
                 
                 if (!atrastaMasina) {
-                    System.out.println("Nav atrasta neviena mašīna ar šo krāsu!");
+                    System.out.println(YELLOW + "Nav atrasta neviena mašīna ar šo krāsu!" + RESET);
                 }
             }
             case 4 -> {
@@ -357,21 +386,21 @@ public class MasinuSistema {
                 while (true) {
                     maxGads = ievaditSkaitli("Ievadi maksimālo gadu: ");
                     if (maxGads >= minGads) break;
-                    System.out.println("Maksimālajam gadam jābūt lielākam vai vienādam ar minimālo gadu. Mēģini vēlreiz.");
+                    System.out.println(RED + "Maksimālajam gadam jābūt lielākam vai vienādam ar minimālo gadu. Mēģini vēlreiz." + RESET);
                 }
                 
                 boolean atrastaMasina = false;
-                System.out.println(Masina.printTableHeader());
+                System.out.println(CYAN + Masina.printTableHeader() + RESET);
                 for (Masina m : masinas) {
                     if (m.gads >= minGads && m.gads <= maxGads) {
                         System.out.println(m);
                         atrastaMasina = true;
                     }
                 }
-                System.out.println(Masina.printTableFooter());
+                System.out.println(CYAN + Masina.printTableFooter() + RESET);
                 
                 if (!atrastaMasina) {
-                    System.out.println("Nav atrasta neviena mašīna šajā gadu diapazonā!");
+                    System.out.println(YELLOW + "Nav atrasta neviena mašīna šajā gadu diapazonā!" + RESET);
                 }
             }
             case 5 -> {
@@ -380,24 +409,24 @@ public class MasinuSistema {
                 while (true) {
                     maxId = ievaditSkaitli("Ievadi maksimālo ID: ");
                     if (maxId >= minId) break;
-                    System.out.println("Maksimālajam ID jābūt lielākam vai vienādam ar minimālo ID. Mēģini vēlreiz.");
+                    System.out.println(RED + "Maksimālajam ID jābūt lielākam vai vienādam ar minimālo ID. Mēģini vēlreiz." + RESET);
                 }
                 
                 boolean atrastaMasina = false;
-                System.out.println(Masina.printTableHeader());
+                System.out.println(CYAN + Masina.printTableHeader() + RESET);
                 for (Masina m : masinas) {
                     if (m.id >= minId && m.id <= maxId) {
                         System.out.println(m);
                         atrastaMasina = true;
                     }
                 }
-                System.out.println(Masina.printTableFooter());
+                System.out.println(CYAN + Masina.printTableFooter() + RESET);
                 
                 if (!atrastaMasina) {
-                    System.out.println("Nav atrasta neviena mašīna šajā ID diapazonā!");
+                    System.out.println(YELLOW + "Nav atrasta neviena mašīna šajā ID diapazonā!" + RESET);
                 }
             }
-            default -> System.out.println("Nepareiza izvēle!");
+            default -> System.out.println(RED + "Nepareiza izvēle!" + RESET);
         }
     }
 
@@ -408,7 +437,7 @@ public class MasinuSistema {
                 try {
                     String[] data = line.split(",");
                     if (data.length != 6) { // Tagad pārbaudam 6 laukus, ieskaitot ID
-                        System.out.println("Kļūdains ieraksts failā: " + line);
+                        System.out.println(RED + "Kļūdains ieraksts failā: " + line + RESET);
                         continue;
                     }
                     
@@ -419,14 +448,15 @@ public class MasinuSistema {
                     if (gads >= 1850 && gads <= 2025 && cena > 0) {
                         masinas.add(new Masina(id, data[1], data[2], data[3], gads, cena));
                     } else {
-                        System.out.println("Nekorekts gads vai cena ierakstā: " + line);
+                        System.out.println(RED + "Nekorekts gads vai cena ierakstā: " + line + RESET);
                     }
                 } catch (NumberFormatException | ArrayIndexOutOfBoundsException e) {
-                    System.out.println("Kļūda ieraksta apstrādē: " + line);
+                    System.out.println(RED + "Kļūda ieraksta apstrādē: " + line + RESET);
                 }
             }
+            System.out.println(GREEN + "Dati veiksmīgi ielādēti!" + RESET);
         } catch (IOException e) {
-            System.out.println("Nevarēja ielādēt failu, sākam ar tukšu sarakstu.");
+            System.out.println(YELLOW + "Nevarēja ielādēt failu, sākam ar tukšu sarakstu." + RESET);
         }
     }
 
@@ -435,9 +465,9 @@ public class MasinuSistema {
             for (Masina m : masinas) {
                 bw.write(m.id + "," + m.marka + "," + m.modelis + "," + m.krasa + "," + m.gads + "," + m.cena + "\n");
             }
-            System.out.println("Dati saglabāti!");
+            System.out.println(GREEN + BOLD + "Dati veiksmīgi saglabāti!" + RESET);
         } catch (IOException e) {
-            System.out.println("Kļūda saglabājot failu.");
+            System.out.println(RED + "Kļūda saglabājot failu." + RESET);
         }
     }
 }
